@@ -1,8 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const swaggerUi = require('swagger-ui-express');
-require('dotenv').config();
 
 const articlesRoutes = require('./routes/articles');
 const swaggerSpec = require('./config/swagger');
@@ -22,6 +22,10 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ success: false, message: 'Something went wrong!' });
@@ -29,8 +33,10 @@ app.use((err, req, res, next) => {
 
 initDatabase();
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`API Documentation: http://localhost:${PORT}/api-docs`);
-  console.log(`Web Interface: http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n🚀 Server is ready:`);
+  console.log(`🔗 Web Interface:    http://0.0.0.0:${PORT}`);
+  console.log(`📚 API Docs:        http://0.0.0.0:${PORT}/api-docs`);
+  console.log(`🌍 Environment:     ${process.env.NODE_ENV || 'development'}`);
+  console.log(`📦 Port:            ${PORT}\n`);
 });
